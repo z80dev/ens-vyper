@@ -11,5 +11,5 @@ A vyper implementation of ENS core contracts
 
 ### FIFSRegistrar
 
-* 1062 gas saved on `register` (2.96% savings)
-* 1089 gas saved on calling `register` to transfer a name that already exists (5.8% savings)
+* 1113 gas saved on `register` (3.1% savings)
+* 1140 gas saved on calling `register` to transfer a name that already exists (6% savings)
