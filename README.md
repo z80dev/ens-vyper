@@ -1,72 +1,43 @@
-A Foundry playground for Vyper, Dasy, and Huff contracts
+# ens-vyper
 
-## Getting Started
+A vyper implementation of ENS core contracts
 
-### Requirements
+## Gas comparison
 
-The following will need to be installed in order to use this template. Please follow the links and instructions.
+### ENSRegistry.sol/vy
 
--   [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)  
-    -   You'll know you've done it right if you can run `git --version`
--   [Foundry / Foundryup](https://github.com/gakonst/foundry)
-    -   This will install `forge`, `cast`, and `anvil`
-    -   You can test you've installed them right by running `forge --version` and get an output like: `forge 0.2.0 (92f8951 2022-08-06T00:09:32.96582Z)`
-    -   To get the latest of each, just run `foundryup`
--   [Huff Compiler](https://docs.huff.sh/get-started/installing/)
-    -   You'll know you've done it right if you can run `huffc --version` and get an output like: `huffc 0.3.0`
--   [Dasy Compiler](https://github.com/dasylang/dasy)
-    -   You'll know you've done it right if you can run `which dasy` and get an output
+* 304 gas saved on `setOwner`
+* 245 gas saved on `setSubnodeOwner`
 
-### Quickstart
+```
+❯ forge test -vvvv -m ".*Gas.*"
+[⠒] Compiling...
+No files changed, compilation skipped
 
-1. Clone this repo 
+Running 2 tests for test/ENSRegistry.t.sol:ENSRegistryTest
+[PASS] testGasOwnershipTransfer() (gas: 24239)
+Traces:
+  [24239] ENSRegistryTest::testGasOwnershipTransfer() 
+    ├─ [7195] ENSRegistry::setOwner(0x0000000000000000000000000000000000000000000000000000000000000000, 0x00000000000000000000000000000000000004d2) 
+    │   ├─ emit Transfer(node: 0x0000000000000000000000000000000000000000000000000000000000000000, owner: 0x00000000000000000000000000000000000004d2)
+    │   └─ ← ()
+    ├─ [6891] 0x037FC82298142374d974839236D2e2dF6B5BdD8F::setOwner(0x0000000000000000000000000000000000000000000000000000000000000000, 0x00000000000000000000000000000000000004d2) 
+    │   ├─ emit Transfer(node: 0x0000000000000000000000000000000000000000000000000000000000000000, owner: 0x00000000000000000000000000000000000004d2)
+    │   └─ ← ()
+    └─ ← ()
 
-2. Install dependencies
+[PASS] testGasSubdnode() (gas: 63940)
+Traces:
+  [63940] ENSRegistryTest::testGasSubdnode() 
+    ├─ [26961] ENSRegistry::setSubnodeOwner(0x0000000000000000000000000000000000000000000000000000000000000000, 0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0, 0x00000000000000000000000000000000000004d2) 
+    │   ├─ emit NewOwner(node: 0x0000000000000000000000000000000000000000000000000000000000000000, label: 0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0, owner: 0x00000000000000000000000000000000000004d2)
+    │   └─ ← 0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae
+    ├─ [26706] 0x037FC82298142374d974839236D2e2dF6B5BdD8F::setSubnodeOwner(0x0000000000000000000000000000000000000000000000000000000000000000, 0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0, 0x00000000000000000000000000000000000004d2) 
+    │   ├─ emit NewOwner(node: 0x0000000000000000000000000000000000000000000000000000000000000000, label: 0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0, owner: 0x00000000000000000000000000000000000004d2)
+    │   └─ ← 0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae
+    └─ ← ()
 
-Once you've cloned and entered into your repository, you need to install the necessary dependencies. In order to do so, simply run:
+Test result: ok. 2 passed; 0 failed; finished in 294.81ms
 
-```shell
-forge install
 ```
 
-3. Build & Test
-
-To build and test your contracts, you can run:
-
-```shell
-forge build
-forge test
-```
-
-For more information on how to use Foundry, check out the [Foundry Github Repository](https://github.com/foundry-rs/foundry/tree/master/forge) and the [foundry-huff library repository](https://github.com/huff-language/foundry-huff).
-
-
-## Blueprint
-
-```ml
-lib
-├─ forge-std — https://github.com/foundry-rs/forge-std
-├─ foundry-huff — https://github.com/huff-language/foundry-huff
-scripts
-├─ Deploy.s.sol — Deployment Script
-src
-├─ SimpleStore — A Simple Storage Contract in Huff/Vyper/Dasy
-test
-└─ SimpleStore.t — SimpleStoreTests
-```
-
-
-## License
-
-[The Unlicense](https://github.com/huff-language/huff-project-template/blob/master/LICENSE)
-
-
-## Acknowledgements
-
-- [forge-template](https://github.com/foundry-rs/forge-template)
-- [femplate](https://github.com/abigger87/femplate)
-
-
-## Disclaimer
-
-_These smart contracts are being provided as is. No guarantee, representation or warranty is being made, express or implied, as to the safety or correctness of the user interface or the smart contracts. They have not been audited and as such there can be no assurance they will work as intended, and users may experience delays, failures, errors, omissions, loss of transmitted information or loss of funds. The creators are not liable for any of the foregoing. Users should proceed with caution and use at their own risk._
