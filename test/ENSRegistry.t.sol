@@ -20,13 +20,23 @@ contract ENSRegistryTest is Test {
         vyRegistry.setOwner(bytes32(0x0), address(this));
     }
 
+    function testGasOwnershipTransfer() public {
+        // used with verbose output to compare gas costs
+        solRegistry.setOwner(bytes32(0x0), address(1234));
+        vyRegistry.setOwner(bytes32(0x0), address(1234));
+    }
+
     function testAllowOwnershipTransfers() public {
         solRegistry.setOwner(bytes32(0x0), address(1234));
-        vyRegistry.owner(bytes32(0x0));
         vyRegistry.setOwner(bytes32(0x0), address(1234));
         assertEq(solRegistry.owner(bytes32(0x0)), address(1234));
         assertEq(vyRegistry.owner(bytes32(0x0)), address(1234));
         assertEq(solRegistry.owner(bytes32(0x0)), vyRegistry.owner(bytes32(0x0)));
+    }
+
+    function testGasSubdnode() public {
+        solRegistry.setSubnodeOwner(bytes32(0x0), keccak256('eth'), address(1234));
+        vyRegistry.setSubnodeOwner(bytes32(0x0), keccak256('eth'), address(1234));
     }
 
     function testSubnode() public {
