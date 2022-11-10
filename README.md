@@ -4,7 +4,7 @@ A vyper implementation of ENS core contracts
 
 ## Gas comparison
 
-### ENSRegistry.sol/vy
+### ENSRegistry
 
 * 304 gas saved on `setOwner`
 * 245 gas saved on `setSubnodeOwner`
@@ -41,3 +41,54 @@ Test result: ok. 2 passed; 0 failed; finished in 294.81ms
 
 ```
 
+
+### FIFSRegistrar
+
+* 1062 gas saved on `register`
+* 1089 gas saved on calling `register` with a name that already exists (transfer)
+
+```
+Running 2 tests for test/FIFSRegistrar.t.sol:FIFSRegistrarTest
+[PASS] testGasNameRegistration() (gas: 80768)
+Traces:
+  [80768] FIFSRegistrarTest::testGasNameRegistration() 
+    ├─ [35817] FIFSRegistrar::register(0x4498c2139ad6cf2beef3ae7bec34c4856d471c8680dfd28d553f117df74df6b7, FIFSRegistrarTest: [0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84]) 
+    │   ├─ [2533] ENSRegistry::owner(0x31456d9b11ceeb2aa9bc3f443ef0437a8b5232af9565f38b03937f83375e67b3) [staticcall]
+    │   │   └─ ← 0x0000000000000000000000000000000000000000
+    │   ├─ [24961] ENSRegistry::setSubnodeOwner(0x0000000000000000000000000000000000000000000000000000000000000000, 0x4498c2139ad6cf2beef3ae7bec34c4856d471c8680dfd28d553f117df74df6b7, FIFSRegistrarTest: [0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84]) 
+    │   │   ├─ emit NewOwner(node: 0x0000000000000000000000000000000000000000000000000000000000000000, label: 0x4498c2139ad6cf2beef3ae7bec34c4856d471c8680dfd28d553f117df74df6b7, owner: FIFSRegistrarTest: [0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84])
+    │   │   └─ ← 0x31456d9b11ceeb2aa9bc3f443ef0437a8b5232af9565f38b03937f83375e67b3
+    │   └─ ← ()
+    ├─ [34755] 0x566B72091192CCd7013AdF77E2a1b349564acC21::register(0x4498c2139ad6cf2beef3ae7bec34c4856d471c8680dfd28d553f117df74df6b7, FIFSRegistrarTest: [0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84]) 
+    │   ├─ [2469] 0x037FC82298142374d974839236D2e2dF6B5BdD8F::owner(0x31456d9b11ceeb2aa9bc3f443ef0437a8b5232af9565f38b03937f83375e67b3) [staticcall]
+    │   │   └─ ← 0x0000000000000000000000000000000000000000
+    │   ├─ [24606] 0x037FC82298142374d974839236D2e2dF6B5BdD8F::setSubnodeOwner(0x0000000000000000000000000000000000000000000000000000000000000000, 0x4498c2139ad6cf2beef3ae7bec34c4856d471c8680dfd28d553f117df74df6b7, FIFSRegistrarTest: [0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84]) 
+    │   │   ├─ emit NewOwner(node: 0x0000000000000000000000000000000000000000000000000000000000000000, label: 0x4498c2139ad6cf2beef3ae7bec34c4856d471c8680dfd28d553f117df74df6b7, owner: FIFSRegistrarTest: [0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84])
+    │   │   └─ ← 0x31456d9b11ceeb2aa9bc3f443ef0437a8b5232af9565f38b03937f83375e67b3
+    │   └─ ← ()
+    └─ ← ()
+
+[PASS] testGasNameTransfer() (gas: 46619)
+Traces:
+  [46619] FIFSRegistrarTest::testGasNameTransfer() 
+    ├─ [18745] FIFSRegistrar::register(0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0, 0x00000000000000000000000000000000000004d2) 
+    │   ├─ [2533] ENSRegistry::owner(0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae) [staticcall]
+    │   │   └─ ← FIFSRegistrarTest: [0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84]
+    │   ├─ [7861] ENSRegistry::setSubnodeOwner(0x0000000000000000000000000000000000000000000000000000000000000000, 0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0, 0x00000000000000000000000000000000000004d2) 
+    │   │   ├─ emit NewOwner(node: 0x0000000000000000000000000000000000000000000000000000000000000000, label: 0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0, owner: 0x00000000000000000000000000000000000004d2)
+    │   │   └─ ← 0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae
+    │   └─ ← ()
+    ├─ [17656] 0x566B72091192CCd7013AdF77E2a1b349564acC21::register(0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0, 0x00000000000000000000000000000000000004d2) 
+    │   ├─ [2469] 0x037FC82298142374d974839236D2e2dF6B5BdD8F::owner(0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae) [staticcall]
+    │   │   └─ ← FIFSRegistrarTest: [0xb4c79daB8f259C7Aee6E5b2Aa729821864227e84]
+    │   ├─ [7506] 0x037FC82298142374d974839236D2e2dF6B5BdD8F::setSubnodeOwner(0x0000000000000000000000000000000000000000000000000000000000000000, 0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0, 0x00000000000000000000000000000000000004d2) 
+    │   │   ├─ emit NewOwner(node: 0x0000000000000000000000000000000000000000000000000000000000000000, label: 0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0, owner: 0x00000000000000000000000000000000000004d2)
+    │   │   └─ ← 0x93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae
+    │   └─ ← ()
+    └─ ← ()
+
+Test result: ok. 2 passed; 0 failed; finished in 558.35ms
+
+~/Developer/ens-vyper/vyper_contracts main* ⇡
+❯ 
+```
